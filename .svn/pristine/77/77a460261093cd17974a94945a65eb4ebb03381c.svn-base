@@ -1,0 +1,53 @@
+package de.proglabor.aufgabe2;
+
+import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+
+public class GUI extends Application {
+	private Stage mainStage;
+	private Tetris t;
+public static void main(String[] args) {
+    launch(args);
+	
+}
+	@Override
+	public void start(Stage arg0) throws Exception {
+		mainStage=arg0;
+		t=new Tetris();
+        Parent root=new Pane();
+        Scene scene=new Scene(root);
+        mainStage.setScene(scene);
+        mainStage.show();
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+            
+            public void handle(KeyEvent ke) {
+            	KeyCode kc = ke.getCode();
+       		 if(kc.equals(KeyCode.D)) {
+       			 t.movingRight();
+       		 }else if(kc.equals(KeyCode.S)) {
+       			 t.falling();
+       		 }else if(kc.equals(KeyCode.A)) {
+       			 t.movingLeft();
+       		 }else if(kc.equals(KeyCode.R)) {
+       			 t.rotating();
+       		 }
+       	
+            }
+        });
+	}
+
+}
+            
+       
+		
+	
+
+

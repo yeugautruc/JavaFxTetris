@@ -1,0 +1,186 @@
+package de.proglabor.aufgabe4;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+public class TimeLine extends TimerTask {
+	private Tetris t;
+	private Group root;
+	private Timer fall;
+	private HighScoreList scoresList;
+	private GameDraw gameDraw;
+
+	// Constructor
+	public TimeLine(Tetris t, Group root, Timer fall, HighScoreList scoresList, GameDraw gameDraw) {
+		this.t = t;
+		this.root = root;
+		this.fall = fall;
+		this.scoresList = scoresList;
+		this.gameDraw = gameDraw;
+	}
+
+	@Override
+	public void run() {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				if (t.gameFinished()) {
+					Text over = new Text("Game Over");
+					over.setFill(Color.DARKRED);
+					over.setStyle("-fx-stroke: black;" + "-fx-stroke-width: 2;");
+					over.setFont(Font.font("Arial", FontWeight.BOLD, 140));
+					over.setX(60);
+					over.setY(450);
+					over.setOpacity(0.6);
+					root.getChildren().add(over);
+					fall.cancel();
+					if (scoresList.getHighScoreListe().size() == 10) {
+						if (t.getScore() > scoresList.getHighScoreListe().get(0).getPoints()) {
+							askNameWindow(t);
+						} else {
+							displayHighScoreWindow();
+						}
+					} else {
+						askNameWindow(t);
+					}
+
+				} else {
+
+					t.falling();
+					System.out.println(t.toString());
+					gameDraw.drawGame();
+					t.toString();
+				}
+
+			}
+		});
+	}
+
+//
+	public void askNameWindow(Tetris in) {
+		Stage stage = new Stage();
+		VBox box = new VBox();
+		box.setPadding(new Insets(10));
+		// How to center align content in a layout manager in JavaFX
+		box.setAlignment(Pos.CENTER);
+		Label label = new Label("Please enter your name!");
+		TextField textUser = new TextField();
+		textUser.setPromptText("enter your name");
+		Button btnOk = new Button();
+		btnOk.setText("OK");
+		btnOk.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				// Assume success always!
+				setLoggedInUser(textUser.getText(), in);
+				stage.close(); // return to main window
+			}
+		});
+		box.getChildren().add(label);
+		box.getChildren().add(textUser);
+		box.getChildren().add(btnOk);
+		Scene scene = new Scene(box, 350, 250);
+		stage.setScene(scene);
+		stage.show();
+	}
+
+	public void setLoggedInUser(String user, Tetris t) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Successful!");
+		alert.setHeaderText("Successful added to Top 10 HighScore");
+		String s = user + " is your name";
+		alert.setContentText(s);
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm,dd.MM.yyyy");
+			LocalDateTime now = LocalDateTime.now();
+			System.out.println(dtf.format(now));
+			HighScore newSc = new HighScore(user, dtf.format(now), t.getScore());
+			scoresList.add(newSc);
+			scoresList.saveScoreInFile("textHighScore.csv");
+			displayHighScoreWindow();
+		}
+
+	}
+
+	// display the high score
+	public void displayHighScoreWindow() {
+		Stage stage = new Stage();
+		VBox box = new VBox();
+		box.setSpacing(20);
+		box.setPadding(new Insets(10, 0, 0, 10));
+
+		// How to center align content in a layout manager in JavaFX
+		box.setAlignment(Pos.CENTER);
+
+		Label label = new Label("High Score List");
+		label.setFont(Font.font("Arial", FontWeight.BOLD, 40));
+		TableView<HighScore> table = new TableView<HighScore>();
+		table.setStyle("-fx-font-size:20;-fx-font-weight: bold");
+		table.setEditable(false);
+		table.setMinHeight(445);
+		ObservableList<HighScore> data = FXCollections.observableArrayList();
+		for (HighScore highScore : scoresList.getHighScoreListe()) {
+			data.add(highScore);
+		}
+		TableColumn<HighScore, Long> noCol = new TableColumn<HighScore, Long>("No");
+		noCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+		noCol.setMinWidth(15);
+		noCol.setCellValueFactory(new PropertyValueFactory<>("no"));
+		TableColumn<HighScore, Long> scoreCol = new TableColumn<HighScore, Long>("Score");
+		scoreCol.setStyle("-fx-alignment: CENTER;");
+		scoreCol.setMinWidth(150);
+		scoreCol.setCellValueFactory(new PropertyValueFactory<>("points"));
+		TableColumn<HighScore, String> nameCol = new TableColumn<HighScore, String>("Name");
+		nameCol.setMinWidth(200);
+		nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+		TableColumn<HighScore, String> timeCol = new TableColumn<HighScore, String>("Time");
+		timeCol.setMinWidth(180);
+		timeCol.setCellValueFactory(new PropertyValueFactory<>("time"));
+		table.getColumns().addAll(noCol, scoreCol, nameCol, timeCol);
+		table.setItems(data);
+
+		Button btnExit = new Button();
+		btnExit.setText("BACK");
+		btnExit.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+		btnExit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				stage.close();
+			}
+		});
+		box.getChildren().add(label);
+		box.getChildren().add(table);
+		box.getChildren().add(btnExit);
+		Scene scene = new Scene(box, 650, 650);
+		stage.setScene(scene);
+		stage.show();
+	}
+}

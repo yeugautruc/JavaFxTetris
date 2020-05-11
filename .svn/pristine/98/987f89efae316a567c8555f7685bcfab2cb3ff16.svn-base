@@ -1,0 +1,72 @@
+package de.proglabor.aufgabe4;
+
+import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.stage.Stage;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
+public class GUI extends Application {
+	// Variables
+	private int XSIZE = 10;
+	private int YSIZE = 20;
+	private int mesh = 45;
+	private int speed = 180;
+	private TimerTask task;
+	private boolean isPaused = false;
+	public HighScoreList scoresList;
+	String uriString = new File("D:\\eclipse-workspace\\Prog-Aufgabe3\\tetris.mp3").toURI().toString();
+	MediaPlayer player = new MediaPlayer(new Media(uriString));
+	private View gameDraw;
+
+	public void setUpButton(Group root, Stage primaryStage, Tetris t) {
+		VBox boxButton = new VBox();
+		boxButton.setPadding(new Insets(650, 0, 0, 560));
+		boxButton.setSpacing(20);
+		Button btnReset = new ButtonTetris(primaryStage, t, player, "RESET", 250, 50, "reset");
+		Button btnExit = new ButtonTetris(primaryStage, t, player, "EXIT", 250, 50, "exit");
+		Button btnSaveGame = new ButtonTetris(primaryStage, t, player, "SAVE GAME", 250, 50, "save");
+		Button btnResumeGame = new ButtonTetris(primaryStage, t, player, "LOAD GAME", 250, 50, "resume");
+		boxButton.getChildren().addAll(btnResumeGame, btnSaveGame, btnReset, btnExit);
+		root.getChildren().add(boxButton);
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+		try {
+			Tetris t = new Tetris();
+			// music player
+			player.setVolume(0.00);
+			player.play();
+			scoresList = new HighScoreList("textHighScore.csv");
+			// game graphic
+			Group root = new Group();
+			Scene scene = new Scene(root);
+			gameDraw = new View(mesh, XSIZE, YSIZE, t, root, scoresList);
+			// timer
+			Timer fall = new Timer();
+			task = new TimeLine(t, root, fall, scoresList, gameDraw);
+			fall.schedule(task, 0, speed);
+			// button
+			setUpButton(root, primaryStage, t);
+			scene.setOnKeyPressed(new Controller(gameDraw, t, isPaused, task, fall, root, scoresList, speed));
+			// display
+			primaryStage.setTitle("TETRIS");
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+}

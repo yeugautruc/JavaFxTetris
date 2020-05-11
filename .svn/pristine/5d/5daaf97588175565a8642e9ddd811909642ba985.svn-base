@@ -1,0 +1,18 @@
+package de.proglabor.aufgabe1;
+
+public abstract class IStone {
+	private int xCoordinate;
+	private int yCoordinate;
+	public boolean hasElement(Point2D element) {
+		return false;
+	}
+
+	public void movingLeft() {
+	}
+
+	public void movingRight() {
+	}
+
+	public void falling() {
+	}
+}

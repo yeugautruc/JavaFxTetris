@@ -1,0 +1,17 @@
+package de.proglabor.aufgabe4;
+
+public class SpaceAlreadyOccupiedException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * The constructor.
+	 *
+	 * @param message the message
+	 */
+	public SpaceAlreadyOccupiedException(String message) {
+		super(message);
+	}
+}

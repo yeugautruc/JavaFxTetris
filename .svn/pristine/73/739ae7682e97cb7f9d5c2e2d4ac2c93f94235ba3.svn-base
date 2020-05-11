@@ -1,0 +1,482 @@
+package de.proglabor.aufgabe4.test;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import de.proglabor.aufgabe4.IStone;
+import de.proglabor.aufgabe4.Tetris;
+import de.proglabor.aufgabe4.Point2D;
+
+/**
+ * 
+ * @author Tanja Heuer
+ *
+ */
+public class TetrisAufgabe2Test {
+
+	
+	private static int XSIZE = 10;
+	private static int YSIZE = 20;
+
+	private Tetris tetris;	
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {	
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		tetris  = new Tetris();		
+	}
+
+	//+++ Test - rotating() ++++++++++++++++++++++++++++++++++++++++++++++++
+	
+	/**
+	 * Test StoneI - rotating()
+	 */
+	@Test (timeout = 1000)
+	public void testRotatingStoneI() {
+		IStone stone = tetris.newStone(0);
+		moveDown(1);
+		tetris.rotating();
+		evaluateElements("1x rotieren", stone, 
+				new Point2D(3, 2), new Point2D(4, 2), new Point2D(5, 2), new Point2D(6, 2));
+		tetris.rotating();
+		evaluateElements("2x rotieren", stone, 
+				new Point2D(4, 0), new Point2D(4, 1), new Point2D(4, 2), new Point2D(4, 3));
+		tetris.rotating();
+		evaluateElements("3x rotieren", stone, 
+				new Point2D(3, 2), new Point2D(4, 2), new Point2D(5, 2), new Point2D(2, 2));
+		tetris.rotating();
+		evaluateElements("4x rotieren", stone, 
+				new Point2D(4, 4), new Point2D(4, 1), new Point2D(4, 2), new Point2D(4, 3));
+	}
+	
+	/**
+	 * Test StoneJ - rotating()
+	 */
+	@Test (timeout = 1000)
+	public void testRotatingStoneJ() {
+		IStone stone = tetris.newStone(1);
+		moveDown(1);
+		tetris.rotating();
+		evaluateElements("1x rotieren", stone, 
+				new Point2D(6, 3), new Point2D(6, 2), new Point2D(5, 2), new Point2D(4, 2));
+		tetris.rotating();
+		evaluateElements("2x rotieren", stone, 
+				new Point2D(6, 1), new Point2D(5, 1), new Point2D(5, 2), new Point2D(5, 3));
+		tetris.rotating();
+		evaluateElements("3x rotieren", stone, 
+				new Point2D(4, 1), new Point2D(4, 2), new Point2D(5, 2), new Point2D(6, 2));
+		tetris.rotating();
+		evaluateElements("4x rotieren", stone, 
+				new Point2D(5, 1), new Point2D(5, 2), new Point2D(5, 3), new Point2D(4, 3));
+	}
+	
+	/**
+	 * Test StoneL - rotating()
+	 */
+	@Test (timeout = 1000)
+	public void testRotatingStoneL() {
+		IStone stone = tetris.newStone(2);
+		moveDown(1);
+		tetris.rotating();
+		evaluateElements("1x rotieren", stone, 
+				new Point2D(3, 2), new Point2D(4, 2), new Point2D(5, 2), new Point2D(5, 1));
+		tetris.rotating();
+		evaluateElements("2x rotieren", stone, 
+				new Point2D(3, 1), new Point2D(4, 1), new Point2D(4, 2), new Point2D(4, 3));
+		tetris.rotating();
+		evaluateElements("3x rotieren", stone, 
+				new Point2D(3, 3), new Point2D(3, 2), new Point2D(4, 2), new Point2D(5, 2));
+		tetris.rotating();
+		evaluateElements("4x rotieren", stone, 
+				new Point2D(4, 1), new Point2D(4, 2), new Point2D(4, 3), new Point2D(5, 3));
+	}
+	
+	/**
+	 * Test StoneO - rotating()
+	 */
+	@Test (timeout = 1000)
+	public void testRotatingStoneO() {
+		IStone stone = tetris.newStone(3);
+		moveDown(1);
+		tetris.rotating();
+		evaluateElements("1x rotieren", stone, 
+				new Point2D(4, 1), new Point2D(4, 2), new Point2D(5, 1), new Point2D(5, 2));
+		tetris.rotating();
+		evaluateElements("2x rotieren", stone, 
+				new Point2D(4, 1), new Point2D(4, 2), new Point2D(5, 1), new Point2D(5, 2));
+		tetris.rotating();
+		evaluateElements("3x rotieren", stone, 
+				new Point2D(4, 1), new Point2D(4, 2), new Point2D(5, 1), new Point2D(5, 2));
+		tetris.rotating();
+		evaluateElements("4x rotieren", stone, 
+				new Point2D(4, 1), new Point2D(4, 2), new Point2D(5, 1), new Point2D(5, 2));
+	}
+	
+	/**
+	 * Test StoneS - rotating()
+	 */
+	@Test (timeout = 1000)
+	public void testRotatingStoneS() {
+		IStone stone = tetris.newStone(4);
+		moveDown(1);
+		tetris.rotating();
+		evaluateElements("1x rotieren", stone, 
+				new Point2D(3, 2), new Point2D(3, 1), new Point2D(4, 2), new Point2D(4, 3));
+		tetris.rotating();
+		evaluateElements("2x rotieren", stone, 
+				new Point2D(3, 3), new Point2D(4, 3), new Point2D(4, 2), new Point2D(5, 2));
+		tetris.rotating();
+		evaluateElements("3x rotieren", stone, 
+				new Point2D(5, 3), new Point2D(5, 2), new Point2D(4, 2), new Point2D(4, 1));
+		tetris.rotating();
+		evaluateElements("4x rotieren", stone, 
+				new Point2D(5, 1), new Point2D(4, 1), new Point2D(4, 2), new Point2D(3, 2));
+	}
+
+	/**
+	 * Test StoneT - rotating()
+	 */
+	@Test (timeout = 1000)
+	public void testRotatingStoneT() {
+		IStone stone = tetris.newStone(5);
+		moveDown(1);
+		tetris.rotating();
+		evaluateElements("1x rotieren", stone, 
+				new Point2D(3, 1), new Point2D(3, 2), new Point2D(3, 3), new Point2D(4, 2));
+		tetris.rotating();
+		evaluateElements("2x rotieren", stone, 
+				new Point2D(3, 3), new Point2D(4, 3), new Point2D(5, 3), new Point2D(4, 2));
+		tetris.rotating();
+		evaluateElements("3x rotieren", stone, 
+				new Point2D(5, 1), new Point2D(5, 2), new Point2D(5, 3), new Point2D(4, 2));
+		tetris.rotating();
+		evaluateElements("4x rotieren", stone, 
+				new Point2D(3, 1), new Point2D(4, 1), new Point2D(5, 1), new Point2D(4, 2));
+	}
+	
+	/**
+	 * Test StoneZ - rotating()
+	 */
+	@Test (timeout = 1000)
+	public void testRotatingStoneZ() {
+		IStone stone = tetris.newStone(6);
+		moveDown(1);
+		tetris.rotating();
+		evaluateElements("1x rotieren", stone, 
+				new Point2D(3, 3), new Point2D(3, 2), new Point2D(4, 1), new Point2D(4, 2));
+		tetris.rotating();
+		evaluateElements("2x rotieren", stone, 
+				new Point2D(5, 3), new Point2D(4, 3), new Point2D(4, 2), new Point2D(3, 2));
+		tetris.rotating();
+		evaluateElements("3x rotieren", stone, 
+				new Point2D(5, 1), new Point2D(5, 2), new Point2D(4, 2), new Point2D(4, 3));
+		tetris.rotating();
+		evaluateElements("4x rotieren", stone, 
+				new Point2D(3, 1), new Point2D(4, 1), new Point2D(4, 2), new Point2D(5, 2));
+	}
+	
+
+	//----- Test collision ---------------------------------------------------------------
+	
+	/**
+	 * Test collision of rotated T-Stones on the right side placed on top of each other
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testCollisionRight() {
+		
+		tetris.newStone(5);
+		rotate(2);
+		moveRight(XSIZE);
+		moveDown(YSIZE);
+
+		IStone stoneT = tetris.newStone(5);
+		rotate(3);
+		moveRight(XSIZE);
+		moveDown(YSIZE);
+
+		evaluateElements("Kollisionsueberpruefung von zwei gedrehten T-Steinen", stoneT, 
+				new Point2D(9, 18), new Point2D(9, 17), new Point2D(9, 16), new Point2D(8, 17));
+	}
+	
+	
+	/**
+	 * Test collision of rotated L-Stones on the right side placed next to each other
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testCollisionMovingLeft() {
+		
+		tetris.newStone(2);
+		rotate(3);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		IStone stoneL = tetris.newStone(2);
+		rotate(1);
+		moveDown(YSIZE-2);
+		moveLeft(XSIZE);
+		
+
+		evaluateElements("Kollisionsueberpruefung von zwei gedrehten L-Steinen", stoneL, 
+				new Point2D(1, 19), new Point2D(2, 19), new Point2D(3, 19), new Point2D(3, 18));
+	}
+	
+	
+	//------ TEST DELETE LINES -----------------------------------------------------------------
+	
+	/**
+	 * Test deleting a row and set a new stone (L) on the left side
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testDeleteOneLineAndSetNewStone() {
+		
+		tetris.newStone(0);  //I
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		tetris.newStone(0); //I
+		rotate(1);
+		moveRight(1);
+		moveDown(YSIZE);
+		
+		
+		tetris.newStone(3); //O
+		moveRight(XSIZE);
+		moveDown(YSIZE);
+		
+		
+		IStone stoneL = tetris.newStone(2); //L
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+		
+
+		evaluateElements("neuer Stein nach gelöschter Reihe setzen", stoneL, 
+				new Point2D(0, 19), new Point2D(1, 19), new Point2D(2, 19), new Point2D(2, 18));
+	}
+
+	
+	/**
+	 * Test deleting two rows and set a new stone (L) on the left side
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testDeleteTwoLinesAndSetNewStoneLeft() {
+		
+		tetris.newStone(0);  //I
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		tetris.newStone(0); //I
+		rotate(1);
+		moveRight(1);
+		moveDown(YSIZE);
+		
+		tetris.newStone(0);  //I
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		tetris.newStone(0); //I
+		rotate(1);
+		moveRight(1);
+		moveDown(YSIZE);
+		
+		tetris.newStone(3); //O
+		moveRight(XSIZE);
+		moveDown(YSIZE);
+		
+		
+		IStone stoneJ = tetris.newStone(1); //J
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+		
+
+		evaluateElements("neuer Stein nach links nach zwei gelöschten Reihen setzen", stoneJ, 
+				new Point2D(0, 18), new Point2D(1, 18), new Point2D(2, 19), new Point2D(2, 18));
+	}
+	
+	
+	/**
+	 * Test deleting two rows and set a new stone (L) on the right side
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testDeleteTwoLinesAndSetNewStoneRight() {
+		
+		tetris.newStone(0);  //I
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		tetris.newStone(0); //I
+		rotate(1);
+		moveRight(1);
+		moveDown(YSIZE);
+		
+		tetris.newStone(0);  //I
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		tetris.newStone(0); //I
+		rotate(1);
+		moveRight(1);
+		moveDown(YSIZE);
+		
+		
+		tetris.newStone(3); //O
+		moveRight(XSIZE);
+		moveDown(YSIZE);
+		
+		
+		IStone stoneL = tetris.newStone(2); //L
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+		
+
+		evaluateElements("neuer Stein nach gelöschter Reihe setzem", stoneL, 
+				new Point2D(0, 19), new Point2D(1, 19), new Point2D(2, 19), new Point2D(2, 18));
+	}
+	
+	
+	/**
+	 * Test deleting stones and count the stones being in list
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testCountStonesBeingInList() {
+		
+		tetris.newStone(0);  //I
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		tetris.newStone(0); //I
+		rotate(1);
+		moveRight(1);
+		moveDown(YSIZE);
+				
+		tetris.newStone(3); //O
+		moveRight(XSIZE);
+		moveDown(YSIZE);
+		
+		tetris.newStone(2); //L
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+		
+		assertEquals("Inhalt der Liste nach Loeschen einer Reihe.", 2, tetris.getStones().size());
+	}
+	
+	/**
+	 * PROBLEM: genau das problem wie besprochen. erzeugen eines neuen steines, und wir schreiben einfach drüber
+	 * score müsste bei 14 sein, bei mir ist es 18
+	 * Test counting the score
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testCountScore() {
+		
+		tetris.newStone(0);  //I
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		tetris.newStone(0); //I
+		rotate(1);
+		moveRight(1);
+		moveDown(YSIZE);
+				
+		tetris.newStone(3); //O
+		moveRight(XSIZE);
+		moveDown(YSIZE);
+		
+		tetris.newStone(2); //L
+		rotate(1);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+		
+		assertEquals("Der Score nach gefallenen Steinen und geloeschten Reihen.", 14, tetris.getScore());
+	}
+	
+	//------ TEST METHODS -----------------------------------------------------------------
+	
+	private void evaluateElements(String msg, IStone stone, Point2D... elements) {
+		String exp = "";
+		String got = "";
+		List<Point2D> elem = Arrays.asList(elements);
+		for (int y = 0; y < YSIZE; y++) {
+			for (int x = 0; x < XSIZE; x++) {
+				Point2D p = new Point2D(x, y);
+				if (elem.contains(p)) {
+					exp += "(" + p.getX() + ", " + p.getY() + ")";
+				}
+				if (stone.hasElement(p)) {
+					got += "(" + p.getX() + ", " + p.getY() + ")";
+				}
+			}			
+		}
+		assertEquals(msg + stone.getClass().getSimpleName() + ": ", exp, got);
+	}
+
+	private void moveLeft(int n) {
+		for (int i = 0; i < n; i++) {			
+			tetris.movingLeft();
+		}
+	}
+
+	private void moveRight(int n) {
+		for (int i = 0; i < n; i++) {			
+			tetris.movingRight();
+		}
+	}
+	
+	private void moveDown(int n) {
+		for (int i = 0; i < n; i++) {			
+			tetris.falling();
+		}
+	}
+	
+	private void rotate(int n){
+		for (int i = 0; i < n; i++) {			
+			tetris.rotating();
+		}
+	}
+	
+}

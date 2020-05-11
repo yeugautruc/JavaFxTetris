@@ -1,0 +1,168 @@
+package de.proglabor.aufgabe1;
+
+/**
+ * 	Represent the condition and the stone action
+ * @author Doan,Manh Hung
+ * @version 1.0
+ * @since 1.0
+**/
+//import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Tetris {
+	/* variable from class Tetris */
+	public static final int XSIZE = 10;
+	public static final int YSIZE = 20;
+	private boolean gameOver = false;
+
+	public boolean lineIsFull(int line) {
+		return false;
+	}
+
+	private IStone currentStone;
+	private List<IStone> stones;
+
+	/*
+	 * *
+	 * 
+	 * @Constructor from Tetris Class
+	 * 
+	 **/
+	public Tetris() {
+
+		stones = new ArrayList<IStone>();
+		currentStone = newStone(randomNumber());
+	}
+
+	public IStone newStone(int number) {
+		/*
+		 * Call the newStone() method from class StoneFactory to create new Stone
+		 * 
+		 * @param recieve input number(0-6) to choose, which stone is created
+		 */
+		currentStone = StoneFactory.newStone(number);
+		if (!canMove("down")) {
+			gameOver = true;
+		}
+		return currentStone;
+	}
+
+	/*
+	 * @return random number (0~6)
+	 */
+	public int randomNumber() {
+
+		return (int) (Math.random() * 7);
+	}
+
+	public void movingLeft() {
+
+		if (canMove("left")) {
+			currentStone.movingLeft();
+		}
+
+	}
+
+	public void movingRight() {
+		if (canMove("right")) {
+			currentStone.movingRight();
+		}
+	}
+
+	public void falling() {
+		if (canMove("down")) {
+			currentStone.falling();
+		} else {
+			stones.add(currentStone);
+			newStone(randomNumber());
+		}
+	}
+
+	public void fallingAll() {
+		while (canMove("down"))
+			currentStone.falling();
+		if (!canMove("down")) {
+			stones.add(currentStone);
+			newStone(randomNumber());
+		}
+	}
+	public void rotate() {
+		if(canMove("rotate")) {
+			currentStone.rotate();
+		}
+	}
+	public boolean canMove(String input) {
+		int addValueX = 0;
+		int addValueY = 0;
+		switch (input) {
+		case "left": // can move left
+			addValueX = -1;
+			break;
+		case "right": // can move right
+			addValueX = 1;
+			break;
+		case "down": // can move down
+			addValueY = 1;
+			break;
+		case "rotate":
+			addValueX = currentStone.getCenter().getY()*(-1);
+			addValueY = currentStone.getCenter().getX();
+			break;
+		default:
+			break;
+		}
+		IStone tempStone = StoneFactory.newStone(currentStone.getKey());
+		tempStone.setElements(currentStone.getElements());
+		for (Point2D point : tempStone.getElements()) {
+			point.setX(point.getX() + addValueX);
+			point.setY(point.getY() + addValueY);
+		}
+
+		if (tempStone.overRange()) {
+			return false;
+		}
+		for (IStone stone : stones) {
+			for (Point2D point : tempStone.getElements()) {
+				if(stone.hasElement(point)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
+	public List<IStone> getStones() {
+		return stones;
+	}
+
+	@Override
+	public String toString() {
+		String matchField = "";
+		boolean hit = false;
+		Point2D box = new Point2D(0, 0);
+		for (int i = 0; i < YSIZE; i++) {
+			box.setY(i);
+			for (int j = 0; j < XSIZE; j++) {
+				box.setX(j);
+				for (IStone stone : stones) {
+					if (stone.hasElement(box)) {
+						hit = true;
+					}
+				}
+				if (currentStone.hasElement(box)) {
+					hit = true;
+				}
+				matchField += (hit) ? "x" : "-";
+				hit = false;
+			}
+			matchField += "\n";
+		}
+		return matchField;
+	}
+
+	public boolean gameFinished() {
+		return gameOver;
+	}
+}

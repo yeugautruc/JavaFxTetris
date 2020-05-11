@@ -1,0 +1,313 @@
+package de.proglabor.aufgabe4;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.proglabor.aufgabe4.IStone;
+import de.proglabor.aufgabe4.Point2D;
+import de.proglabor.aufgabe4.Tetris;
+
+/**
+ * Represent the condition and the stone action
+ * 
+ * @author Doan,Manh Hung
+ * @version 1.0
+ * @since 1.0
+ **/
+public class Tetris {
+	/* variable from class Tetris */
+	public static final int XSIZE = 10;
+	public static final int YSIZE = 20;
+	private int score = 0;
+	private boolean gameOver = false;
+	private IStone currentStone;
+	private List<IStone> stones;
+
+	/*
+	 * *
+	 * 
+	 * @Constructor from TETRIS Class
+	 * 
+	 **/
+	public Tetris() {
+		stones = new ArrayList<IStone>();
+		currentStone = newStone(randomNumber());
+	}
+
+	/*
+	 * Call the newStone() method from class StoneFactory to create new Stone
+	 * 
+	 * @param recieve input number(0-6) to choose, which stone is created
+	 */
+	public IStone newStone(int number) {
+		currentStone = StoneFactory.newStone(number);
+		if (!canMove("down")) {
+			gameOver = true;
+		} else
+			score += 1;
+		return currentStone;
+	}
+
+	/*
+	 * @return random number (0~6)
+	 */
+	public int randomNumber() {
+
+		return (int) (Math.random() * 7);
+	}
+
+	/*
+	 * All move method are here
+	 */
+	public void movingLeft() {
+
+		if (canMove("left")) {
+			currentStone.movingLeft();
+		}
+
+	}
+
+	public void movingRight() {
+		if (canMove("right")) {
+			currentStone.movingRight();
+		}
+	}
+
+	public void falling() {
+		if (canMove("down")) {
+			currentStone.falling();
+		} else {
+			stones.add(currentStone);
+			deleteRow();
+			newStone(randomNumber());
+		}
+	}
+
+	public void fallingAll() {
+		while (canMove("down")) {
+			currentStone.falling();
+		}
+		if (!canMove("down")) {
+			stones.add(currentStone);
+			deleteRow();
+			newStone(randomNumber());
+		}
+	}
+
+	public void rotating() {
+		for (int i = 0; i < 2; i++) {
+			if (!canMove("rotate")) {
+				movingLeft();
+			}
+		}
+		for (int i = 0; i < 2; i++) {
+			if (!canMove("rotate")) {
+				movingRight();
+			}
+		}
+		if (canMove("rotate")) {
+			currentStone.rotate();
+		}
+	}
+
+	public boolean canMove(String in) {
+		IStone tmpStone = StoneFactory.newStone(currentStone.getKey());
+		tmpStone.copyStone(currentStone);
+		switch (in) {
+		case "left":
+			tmpStone.movingLeft();
+			break;
+		case "right":
+			tmpStone.movingRight();
+			break;
+		case "down":
+			tmpStone.falling();
+			break;
+		case "rotate":
+			tmpStone.rotate();
+			break;
+		}
+		if (tmpStone.overRange()) {
+			return false;
+		}
+		for (IStone stone : stones) {
+			for (Point2D point : tmpStone.getElements()) {
+				if (stone.hasElement(point) && stone.hashCode() != currentStone.hashCode()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	// draw method draw all stone in list into context
+
+	public IStone getCurrentStone() {
+		return currentStone;
+	}
+
+	public void setCurrentStone(IStone currentStone) {
+		this.currentStone = currentStone;
+	}
+
+	/*
+	 * Delete a full row
+	 */
+	// Delete row when fullRow() is true
+	public void deleteRow() {
+		for (int i = 0; i < Tetris.YSIZE; i++) {
+			if (fullRow(i)) {
+				score += 10;
+				System.out.println("Row " + i + " is full, get 10 points");
+				for (IStone stone : stones) {
+					stone.deleteElements(i);
+				}
+			}
+		}
+//		System.out.println("Size stones before remove "+ stones.size());
+		clearList();
+		for (IStone stone : stones) {
+			currentStone = stone;
+			while (canMove("down")) {
+				currentStone.falling();
+			}
+		}
+	}
+
+	// Check if Row is full
+	public boolean fullRow(int y) {
+		Point2D comparePoint = new Point2D(0, 0);
+		int checkFullLine = 0;
+		comparePoint.setY(y);
+		for (int j = 0; j < XSIZE; j++) {
+			comparePoint.setX(j);
+			for (IStone stone : stones) {
+				if (stone.hasElement(comparePoint))
+					checkFullLine++;
+			}
+		}
+		if (checkFullLine == 10) {
+			return true;
+		}
+		return false;
+	}
+
+	// Clear null Stone
+	public void clearList() {
+		List<IStone> remove = new ArrayList<IStone>();
+		for (IStone stone : stones) {
+			if (stone.checkIfNull()) {
+				remove.add(stone);
+			}
+		}
+		stones.removeAll(remove);
+	}
+
+	/*
+	 * Save game and load game
+	 */
+	public void saveGame() {
+		try {
+			try {
+				File txtFile = new File("gameData.csv");
+				if (txtFile.exists() && txtFile.isFile()) {
+					txtFile.delete();
+				}
+				txtFile.createNewFile();
+			} catch (IOException e) {
+			}
+			BufferedWriter output = new BufferedWriter(new FileWriter("gameData.csv", true));
+			output.append("" + getScore() + "\n");
+			for (IStone stone : stones) {
+				output.append("" + stone.getKey());
+				if (stone.getElements().size() != 0) {
+					for (int i = 0; i < stone.getElements().size(); i++) {
+						output.append("," + stone.getElement(i + 1).getX() + "," + stone.getElement(i + 1).getY());
+					}
+				}
+				output.append("\n");
+				// print in data
+			}
+			output.close();
+		} catch (IOException ex1) {
+		}
+		System.out.println("Game saved!");
+	}
+
+	public void loadGame() throws IOException {
+		stones.removeAll(stones);
+		BufferedReader reader = new BufferedReader(new FileReader("gameData.csv"));
+		String line = reader.readLine();
+		setScore(Integer.parseInt(line));
+		line = reader.readLine();
+		while (line != null) // read the score file line by line
+		{
+			try {
+				while (line != null) {
+					String temp = line;
+					String[] result = temp.split(",");
+					IStone newStone = StoneFactory.newStone(Integer.parseInt(result[0]));
+					newStone.getElements().removeAll(newStone.getElements());
+					for (int i = 1; i < result.length; i += 2) {
+						newStone.getElements().add(new Point2D(Integer.parseInt(result[i].trim()),
+								Integer.parseInt(result[i + 1].trim())));
+					}
+					stones.add(newStone);
+					line = reader.readLine();
+				}
+			} catch (IOException e) {
+				System.out.println("IOException");
+			}
+		}
+		reader.close();
+	}
+
+	// to string method
+	@Override
+	public String toString() {
+		String matchField = "";
+		boolean hit = false;
+		Point2D box = new Point2D(0, 0);
+		for (int i = 0; i < YSIZE; i++) {
+			box.setY(i);
+			for (int j = 0; j < XSIZE; j++) {
+				box.setX(j);
+				for (IStone stone : stones) {
+					if (stone.hasElement(box)) {
+						hit = true;
+					}
+				}
+				if (currentStone.hasElement(box)) {
+					hit = true;
+				}
+				matchField += (hit) ? "x" : "-";
+				hit = false;
+			}
+			matchField += "\n";
+		}
+		return matchField;
+	}
+
+	//
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	// get stones list
+	public List<IStone> getStones() {
+		return stones;
+	}
+
+	public boolean gameFinished() {
+		return gameOver;
+	}
+}

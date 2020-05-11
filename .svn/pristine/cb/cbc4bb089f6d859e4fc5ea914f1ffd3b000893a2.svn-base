@@ -1,0 +1,65 @@
+package de.proglabor.aufgabe4;
+
+import java.io.IOException;
+
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
+
+public class ButtonTetris extends Button {
+
+	public ButtonTetris(Stage primaryStage, Tetris t, MediaPlayer player, String name, int xSize, int ySize,
+			String event) {
+		this.setText(name);
+		this.setPrefSize(xSize, ySize);
+		switch (event) {
+		case "exit":
+			this.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					System.exit(0);
+				}
+			});
+			break;
+		case "reset":
+			this.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					player.stop();
+					primaryStage.close();
+					Platform.runLater(() -> new GUI().start(new Stage()));
+				}
+			});
+			break;
+		case "save":
+			this.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					t.saveGame();
+				}
+			});
+			break;
+		case "resume":
+			this.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					try {
+						t.loadGame();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			break;
+
+		default:
+			break;
+		}
+
+		this.setStyle("-fx-font: bold 20pt Arial;-fx-effect: dropshadow( one-pass-box , gray , 8 , 0.0 , 2 , 0 );");
+
+	}
+}

@@ -1,0 +1,8 @@
+package de.proglabor.aufgabe1;
+
+public class StoneFactory {
+
+	public IStone newStone(int number) {
+		return null;
+	}
+}

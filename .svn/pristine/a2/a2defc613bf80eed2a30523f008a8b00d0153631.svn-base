@@ -1,0 +1,10 @@
+package de.proglabor.aufgabe1;
+
+public class StoneI extends IStone {
+	Point2D input1 = new Point2D(0,0);
+	Point2D input2 = new Point2D(0,1);
+	Point2D input3 = new Point2D(0,2);
+	Point2D input4 = new Point2D(0,3);
+	public StoneI() {
+	}
+}

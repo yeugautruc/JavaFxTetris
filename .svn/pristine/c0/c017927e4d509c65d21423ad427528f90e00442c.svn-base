@@ -1,0 +1,25 @@
+package de.proglabor.aufgabe1;
+
+import java.util.List;
+
+public class Tetris {
+	List<IStone> stones;
+	IStone currentStone;
+
+	public Tetris() {
+
+	}
+
+	public boolean hasElement(Point2D element) {
+		return false;
+	}
+
+	public void movingLeft() {
+	}
+
+	public void movingRight() {
+	}
+
+	public void falling() {
+	}
+}

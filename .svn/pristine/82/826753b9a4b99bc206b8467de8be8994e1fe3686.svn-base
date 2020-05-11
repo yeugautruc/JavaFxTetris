@@ -1,0 +1,80 @@
+package de.proglabor.aufgabe2;
+
+public abstract class IStone {
+	private Point2D p1;
+	private Point2D p2;
+	private Point2D p3;
+	private Point2D p4;
+
+	public boolean hasElement(Point2D element) {
+		if (p1.equals(element) || p2.equals(element) || p3.equals(element) || p4.equals(element))
+			return true;
+		return false;
+	}
+
+	public void moveX(int x) {
+		if (p1 != null)
+			p1.setX(p1.getX() + x);
+		if (p2 != null)
+			p2.setX(p2.getX() + x);
+		if (p3 != null)
+			p3.setX(p3.getX() + x);
+		if (p4 != null)
+			p4.setX(p4.getX() + x);
+	}
+
+	public void moveY(int y) {
+		if (p1 != null)
+			p1.setY(p1.getY() + y);
+		if (p2 != null)
+			p2.setY(p2.getY() + y);
+		if (p3 != null)
+			p3.setY(p3.getY() + y);
+		if (p4 != null)
+			p4.setY(p4.getY() + y);
+	}
+
+	public void movingLeft() {
+		moveX(-1);
+	}
+
+	public void movingRight() {
+		moveX(1);
+	}
+
+	public void falling() {
+		moveY(1);
+	}
+
+	public void setP1(Point2D in) {
+		p1 = in;
+	}
+
+	public Point2D getP1() {
+		return p1;
+	}
+
+	public void setP2(Point2D in) {
+		p2 = in;
+	}
+
+	public Point2D getP2() {
+		return p2;
+	}
+
+	public void setP3(Point2D in) {
+		p3 = in;
+	}
+
+	public Point2D getP3() {
+		return p3;
+	}
+
+	public void setP4(Point2D in) {
+		p4 = in;
+	}
+
+	public Point2D getP4() {
+		return p4;
+	}
+}

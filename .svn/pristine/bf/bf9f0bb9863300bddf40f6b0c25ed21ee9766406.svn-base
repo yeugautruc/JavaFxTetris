@@ -1,0 +1,105 @@
+package de.proglabor.aufgabe4;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javafx.event.EventHandler;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.Group;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+
+public class KeyBoardTetris implements EventHandler<KeyEvent> {
+
+	private Tetris t;
+	private boolean isPaused;
+	private int countPause = 0;
+	private TimerTask task;
+	private Timer fall;
+	private Group root;
+	private Text pause = new Text("Paused");
+	private HighScoreList scoresList;
+	private int speed;
+
+	public KeyBoardTetris(Tetris t, boolean isPaused, TimerTask task, Timer fall, Group root, HighScoreList scoresList,
+			int speed) {
+		this.t = t;
+		this.isPaused = isPaused;
+		this.task = task;
+		this.fall = fall;
+		this.root = root;
+		this.scoresList = scoresList;
+		this.speed = speed;
+		pause.setFill(Color.DARKRED);
+		pause.setStyle("-fx-stroke: black;" + "-fx-stroke-width: 5;");
+		pause.setFont(Font.font("Arial", FontWeight.BOLD, 158));
+		pause.setX(180);
+		pause.setY(450);
+		pause.setOpacity(0.6);
+	}
+
+	@Override
+	public void handle(KeyEvent e) {
+		KeyCode kc = e.getCode();
+		if (kc.equals(KeyCode.D) && isPaused == false && !t.gameFinished()) {
+			t.movingRight();
+			try {
+				t.drawGame();
+				System.out.println(t.toString());
+			} catch (SpaceAlreadyOccupiedException e1) {
+				e1.printStackTrace();
+			}
+		} else if (kc.equals(KeyCode.S) && isPaused == false && !t.gameFinished()) {
+			t.falling();
+			try {
+				t.drawGame();
+				System.out.println(t.toString());
+			} catch (SpaceAlreadyOccupiedException e1) {
+				e1.printStackTrace();
+			}
+		} else if (kc.equals(KeyCode.A) && isPaused == false && !t.gameFinished()) {
+			t.movingLeft();
+			try {
+				t.drawGame();
+				System.out.println(t.toString());
+			} catch (SpaceAlreadyOccupiedException e1) {
+				e1.printStackTrace();
+			}
+		} else if (kc.equals(KeyCode.W) && isPaused == false && !t.gameFinished()) {
+			t.rotating();
+			try {
+				t.drawGame();
+				System.out.println(t.toString());
+			} catch (SpaceAlreadyOccupiedException e1) {
+				e1.printStackTrace();
+			}
+		} else if (kc.equals(KeyCode.X) && isPaused == false && !t.gameFinished()) {
+			t.fallingAll();
+			try {
+				t.drawGame();
+				System.out.println(t.toString());
+			} catch (SpaceAlreadyOccupiedException e1) {
+				e1.printStackTrace();
+			}
+
+		} else if (kc.equals(KeyCode.P) && !t.gameFinished()) {
+			countPause++;
+			if (countPause == 1) {
+				isPaused = true;
+				task.cancel();
+				root.getChildren().add(pause);
+			}
+			if (countPause == 2) {
+				// after cancel the task, have to INIT again task to run schedule again
+				root.getChildren().remove(pause);
+				isPaused = false;
+				task = new TimeLine(t, root, fall, scoresList);
+				fall.schedule(task, 0, speed);
+				countPause = 0;
+			}
+		}
+	}
+}

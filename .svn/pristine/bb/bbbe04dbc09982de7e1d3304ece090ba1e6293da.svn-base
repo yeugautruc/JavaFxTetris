@@ -1,0 +1,325 @@
+package de.proglabor.aufgabe2;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Timer;
+import java.util.TimerTask;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.stage.Stage;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+//import javafx.scene.media.Media;
+//import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+
+public class GUI extends Application {
+	// Variables
+	private int XSIZE = 10;
+	private int YSIZE = 20;
+	private int mesh = 45;
+	private int speed = 400;
+	private int countPause = 0;
+	private TimerTask task;
+	private boolean isPaused = false;
+	private String file = "highScore.txt";
+	private int highScore = highScoreFromFile(file);
+
+	@Override
+	public void start(Stage primaryStage) {
+		try {
+			// media player init
+//			String uriString = new File("D:\\eclipse-workspace\\Prog-Aufgabe2\\tetris.mp3").toURI().toString();
+//			MediaPlayer player = new MediaPlayer(new Media(uriString));
+			// frame init
+			Group root = new Group();
+			Scene scene = new Scene(root);
+			Canvas canvas = new Canvas(900, 950);
+			Tetris t = new Tetris(root);
+			t.loadScoreFromFile("textHighScore.csv");
+			root.getChildren().add(canvas);
+			GraphicsContext context = canvas.getGraphicsContext2D();
+			Font newFont = Font.font("Arial", FontWeight.BOLD, 40);
+			String textTitel = "TETRIS";
+			String textHighScore = "High Score: ";
+			context.setFont(newFont);
+			context.fillText(textTitel, 85 + 20 + mesh * XSIZE, 100);
+			context.fillText(textHighScore, 85 + 20 + mesh * XSIZE, 240);
+			context.fillText("" + highScore, 85 + 20 + mesh * XSIZE + 240, 240);
+			primaryStage.setScene(scene);
+			context.fillRect(20, 20, mesh * XSIZE, 2);
+			context.fillRect(20, 20, 2, mesh * YSIZE);
+			context.fillRect(20, 20 + mesh * YSIZE, mesh * XSIZE, 2);
+			context.fillRect(20 + mesh * XSIZE, 20, 2, mesh * YSIZE);
+			// pause text
+			Text pause = new Text("Paused");
+			pause.setFill(Color.DARKRED);
+			pause.setStyle("-fx-stroke: black;" + "-fx-stroke-width: 5;");
+			pause.setFont(Font.font("Arial", FontWeight.BOLD, 158));
+			pause.setX(180);
+			pause.setY(450);
+			pause.setOpacity(0.6);
+			// timer to create loop
+			Timer fall = new Timer();
+			task = new TimerTask() {
+				@Override
+				public void run() {
+					Platform.runLater(new Runnable() {
+						public void run() {
+							if (t.gameFinished()) {
+								Text over = new Text("Game Over");
+								over.setFill(Color.DARKRED);
+								over.setStyle("-fx-stroke: black;" + "-fx-stroke-width: 2;");
+								over.setFont(Font.font("Arial", FontWeight.BOLD, 140));
+								over.setX(60);
+								over.setY(450);
+								over.setOpacity(0.6);
+								root.getChildren().add(over);
+								fall.cancel();
+								displayHighScore(t.getScore(), root);
+								DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm,dd.MM.yyyy");
+								LocalDateTime now = LocalDateTime.now();
+								System.out.println(dtf.format(now));
+								String nameWinner = "";
+								if (t.getScore() > t.getHighScore()) {
+									nameWinner = askName();
+									t.saveScore(nameWinner, dtf.format(now));
+									t.saveScoreInFile("textHighScore.csv");
+								}
+								displayHighScore(t.getScore(), root);
+							} else {
+//								player.play();
+								t.falling();
+								try {
+									t.drawGame();
+								} catch (SpaceAlreadyOccupiedException e) {
+									e.printStackTrace();
+								}
+								t.toString();
+							}
+						}
+
+						private String askName() {
+							return "Doan";
+						}
+					});
+				}
+
+			};
+			fall.schedule(task, 0, speed);
+			/*
+			 * when key press will override the timer task
+			 */
+			// reset button
+			Button btnReset = new Button();
+			btnReset.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+			btnReset.setText("RESET");
+			btnReset.setPrefSize(100, 50);
+			btnReset.setLayoutX(770);
+			btnReset.setLayoutY(890);
+			btnReset.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					primaryStage.close();
+					Platform.runLater(() -> new GUI().start(new Stage()));
+				}
+			});
+			root.getChildren().add(btnReset);
+			// exit button
+			Button btnExit = new Button();
+			btnExit.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+			btnExit.setText("EXIT");
+			btnExit.setPrefSize(100, 50);
+			btnExit.setLayoutX(650);
+			btnExit.setLayoutY(890);
+			btnExit.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					System.exit(0);
+				}
+			});
+			root.getChildren().add(btnExit);
+			//
+			scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+				@Override
+				public void handle(KeyEvent e) {
+					KeyCode kc = e.getCode();
+					if (kc.equals(KeyCode.D) && isPaused == false && !t.gameFinished()) {
+						t.movingRight();
+						try {
+							t.drawGame();
+						} catch (SpaceAlreadyOccupiedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						t.toString();
+					} else if (kc.equals(KeyCode.S) && isPaused == false && !t.gameFinished()) {
+						t.falling();
+						try {
+							t.drawGame();
+						} catch (SpaceAlreadyOccupiedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						t.toString();
+					} else if (kc.equals(KeyCode.A) && isPaused == false && !t.gameFinished()) {
+						t.movingLeft();
+						try {
+							t.drawGame();
+						} catch (SpaceAlreadyOccupiedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						t.toString();
+					} else if (kc.equals(KeyCode.W) && isPaused == false && !t.gameFinished()) {
+						t.rotating();
+						try {
+							t.drawGame();
+						} catch (SpaceAlreadyOccupiedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						t.toString();
+					} else if (kc.equals(KeyCode.X) && isPaused == false && !t.gameFinished()) {
+						t.fallingAll();
+						try {
+							t.drawGame();
+						} catch (SpaceAlreadyOccupiedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						t.toString();
+
+					} else if (kc.equals(KeyCode.P) && !t.gameFinished()) {
+						countPause++;
+						if (countPause == 1) {
+							isPaused = true;
+							task.cancel();
+							root.getChildren().add(pause);
+						}
+						if (countPause == 2) {
+							root.getChildren().remove(pause);
+							isPaused = false;
+							task = new TimerTask() {
+								@Override
+								public void run() {
+									Platform.runLater(new Runnable() {
+										public void run() {
+											countPause = 0;
+											if (t.gameFinished()) {
+												Text over = new Text("Game Over");
+												over.setFill(Color.DARKRED);
+												over.setStyle("-fx-stroke: black;" + "-fx-stroke-width: 2;");
+												over.setFont(Font.font("Arial", FontWeight.BOLD, 140));
+												over.setX(80);
+												over.setY(450);
+												over.setOpacity(0.6);
+												root.getChildren().add(over);
+												fall.cancel();
+												displayHighScore(t.getScore(), root);
+											} else {
+												t.falling();
+												try {
+													t.drawGame();
+												} catch (SpaceAlreadyOccupiedException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
+											}
+										}
+									});
+								}
+							};
+							fall.schedule(task, 0, speed);
+							countPause = 0;
+						}
+					}
+				}
+			});
+			primaryStage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	//
+	// determine the high score
+	public int highScoreFromFile(String file) {
+		int highScore = 0;
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line = reader.readLine();
+			while (line != null) // read the score file line by line
+			{
+				try {
+					int score = Integer.parseInt(line.trim()); // parse each line as an int
+					if (score > highScore) // and keep track of the largest
+					{
+						highScore = score;
+					}
+				} catch (NumberFormatException e1) {
+					// ignore invalid scores
+					System.err.println("ignoring invalid score: " + line);
+				}
+				line = reader.readLine();
+			}
+			reader.close();
+
+		} catch (IOException ex) {
+			System.err.println("ERROR reading scores from file");
+		}
+		return highScore;
+	}
+
+	// display the high score
+	public void displayHighScore(int points, Group root) {
+		Canvas canvas = new Canvas(900, 950);
+		root.getChildren().add(canvas);
+		GraphicsContext context = canvas.getGraphicsContext2D();
+		Font newFont = Font.font("Arial", FontWeight.BOLD, 40);
+		context.setFont(newFont);
+		if (points > highScore) {
+			context.fillText("New high score: " + points, 500, 600);
+			highScore = points;
+			writeHighScore(file);
+		} else if (points > highScore - 100) {
+			context.fillText("Tied to high score " + points, 500, 600);
+		} else {
+			context.fillText("No Hope! \n" + points + " points", 550, 600);
+		}
+	}
+
+	// append the last score to the end of the file
+	public void writeHighScore(String file) {
+		try {
+			BufferedWriter output = new BufferedWriter(new FileWriter(file, true));
+			output.newLine();
+			output.append("" + highScore);
+			output.close();
+
+		} catch (IOException ex1) {
+			System.out.printf("ERROR writing score to file: %s\n", ex1);
+		}
+	}
+
+	//
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+}

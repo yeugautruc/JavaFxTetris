@@ -1,0 +1,186 @@
+package de.proglabor.aufgabe1;
+
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class Tetris {
+
+	private static final int XSize = 10;
+	private static final int YSize = 20;
+	private int score = 0;
+	private boolean fallingFinished = false;
+
+	public boolean lineIsFull(int line) {
+		return false;
+	}
+
+	IStone currentStone;
+	List<IStone> stones;
+
+	public Tetris() {
+		stones = new ArrayList<IStone>();
+		newStone();
+	}
+
+	public boolean gameOver() {
+		return false;
+	}
+
+	public IStone newStone(int number) { // static must appear, but not working
+		StoneFactory sF = new StoneFactory();
+		currentStone = sF.newStone(number);
+		return currentStone;
+	}
+
+	public IStone newStone() {
+		StoneFactory sF = new StoneFactory();
+		Random r = new Random();
+		int in = Math.abs(r.nextInt()) % 7 + 1;
+		currentStone = sF.newStone(in);
+		return currentStone;
+	}
+
+	public void movingLeft() {
+		if (!tryMove()) {
+			currentStone.movingLeft();
+		}
+
+	}
+
+	public void movingRight() {
+		if (tryMove()) {
+			currentStone.movingRight();
+		}
+	}
+
+	public void falling() {
+		if (tryMove()) {
+			currentStone.falling();
+		}
+	}
+
+	public void rotating() {
+		// clockwise rotating
+		if (tryMove()) {
+			currentStone.getP1().setX(-currentStone.getP1().getY());
+			currentStone.getP2().setX(-currentStone.getP2().getY());
+			currentStone.getP3().setX(-currentStone.getP3().getY());
+			currentStone.getP4().setX(-currentStone.getP4().getY());
+			currentStone.getP1().setY(currentStone.getP1().getX());
+			currentStone.getP2().setY(currentStone.getP2().getX());
+			currentStone.getP3().setY(currentStone.getP3().getX());
+			currentStone.getP4().setY(currentStone.getP4().getX());
+		}
+	}
+
+	public boolean tryMove() {
+		/*
+		 * try move the Stone, if Stone contact with left range or right range or touch
+		 * other stone => cannot move => return false
+		 */
+		if (canMoveLeftOrRight(currentStone))
+			if (!overRange(currentStone))
+				if (canMoveDown(currentStone))
+					return true;
+		return false;
+	}
+
+	private boolean canMoveDown(IStone i) {
+		if (!i.hasElement(new Point2D(i.getP1().getX(), i.getP1().getY() + 1)))
+			if (!i.hasElement(new Point2D(i.getP2().getX(), i.getP2().getY() + 1)))
+				if (!i.hasElement(new Point2D(i.getP3().getX(), i.getP3().getY() + 1)))
+					if (!i.hasElement(new Point2D(i.getP4().getX(), i.getP4().getY() + 1)))
+						return true;
+		return false;
+	}
+
+	public boolean canMoveLeftOrRight(IStone i) {
+		if (!i.hasElement(new Point2D(i.getP1().getX() + 1, i.getP1().getY()))
+				&& !i.hasElement(new Point2D(i.getP1().getX() - 1, i.getP1().getY())))
+			if (!i.hasElement(new Point2D(i.getP2().getX() + 1, i.getP2().getY()))
+					&& !i.hasElement(new Point2D(i.getP2().getX() - 1, i.getP2().getY())))
+				if (!i.hasElement(new Point2D(i.getP3().getX() + 1, i.getP3().getY()))
+						&& !i.hasElement(new Point2D(i.getP3().getX() - 1, i.getP3().getY())))
+					if (!i.hasElement(new Point2D(i.getP4().getX() + 1, i.getP4().getY()))
+							&& !i.hasElement(new Point2D(i.getP4().getX() - 1, i.getP4().getY())))
+						return true;
+		return false;
+	}
+
+	public boolean overRange(IStone i) {
+		if (i.getP1().getX() > 0 && i.getP1().getX() < XSize && i.getP2().getX() > 0 && i.getP2().getX() < XSize
+				&& i.getP3().getX() > 0 && i.getP3().getX() < XSize && i.getP4().getX() > 0 && i.getP4().getX() < XSize)
+			if (i.getP1().getY() > 0 && i.getP1().getY() < YSize && i.getP2().getX() > 0 && i.getP2().getY() < YSize
+					&& i.getP3().getY() > 0 && i.getP3().getY() < YSize && i.getP4().getY() > 0
+					&& i.getP4().getY() < YSize)
+				return false;
+		return true;
+	}
+
+	public void removeFullLine(int line) {
+		for (IStone test : stones) {
+			if (test.getP1().getY() == line)
+				test.setP1(null);
+			if (test.getP2().getY() == line)
+				test.setP1(null);
+			if (test.getP3().getY() == line)
+				test.setP1(null);
+			if (test.getP4().getY() == line)
+				test.setP1(null);
+		}
+
+		score = score + 10;
+
+		/*
+		 * remove line, which is full all point in this line will hasElement = false;
+		 * all above point will move down(y-1)
+		 */
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void pieceDropped() {
+		// remove full line and create new stone
+		if (lineIsFull(currentStone.getP1().getY()))
+			removeFullLine(currentStone.getP1().getY());
+		if (lineIsFull(currentStone.getP2().getY()))
+			removeFullLine(currentStone.getP2().getY());
+		if (lineIsFull(currentStone.getP3().getY()))
+			removeFullLine(currentStone.getP3().getY());
+		if (lineIsFull(currentStone.getP4().getY()))
+			removeFullLine(currentStone.getP4().getY());
+		if (fallingFinished == true) {
+			stones.add(currentStone);
+			newStone();
+		}
+	}
+
+	public void keyPressed(KeyEvent e) {
+		int keyCode = e.getKeyCode();
+		switch (keyCode) {
+		case 'a':
+			movingLeft();
+			break;
+		case 'd':
+			movingRight();
+			break;
+//		case 's':
+//			fallingAll();
+//			break;
+		case 'w':
+			rotating();
+			break;
+		default:
+			break;
+		}
+	}
+
+	public List<Point2D> getStones() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

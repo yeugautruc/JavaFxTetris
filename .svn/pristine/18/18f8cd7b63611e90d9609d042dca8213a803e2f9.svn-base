@@ -1,0 +1,22 @@
+package de.proglabor.aufgabe1;
+
+import java.util.List;
+import java.util.Random;
+
+public class Tetris {
+	StoneFactory newGame = new StoneFactory();
+	List<IStone> stones;
+	IStone currentStone;
+	public void gameStart() {
+		Random r = new Random();
+		int number = Math.abs(r.nextInt()) % 7 + 1;
+		while (gameEnd()==false) {
+			newGame.newStone(number);
+		}
+	};
+	public Tetris() {
+		
+	}
+	public boolean gameEnd() {return false;}
+	
+}

@@ -1,0 +1,59 @@
+package de.proglabor.aufgabe6;
+
+public class HighScore {
+	private String name;
+	private String time;
+	private long points;
+	private int no;
+
+	public HighScore(String name, String time, long points) {
+		this.name = name;
+		this.time = time;
+		this.points = points;
+	}
+
+	public int getNo() {
+		return no;
+	}
+
+	public HighScore(String input) {
+		try {
+			String[] result = input.split(",");
+			this.time = result[0].trim() + "," + result[1].trim();
+			this.name = result[2].trim();
+			this.points = Integer.parseInt(result[3].trim());
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public long getPoints() {
+		return points;
+	}
+
+	public void setPoints(long points) {
+		this.points = points;
+	}
+
+	public void setNo(int i) {
+		this.no = i;
+	}
+}

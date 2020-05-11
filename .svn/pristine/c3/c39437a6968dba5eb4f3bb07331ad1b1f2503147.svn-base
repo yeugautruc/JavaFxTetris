@@ -1,0 +1,12 @@
+package de.proglabor.aufgabe1;
+
+public class Point2D {
+	int indexX;
+	int indexY;
+
+	public Point2D(int indexX, int indexY) {
+		this.indexX = indexX;
+		this.indexY = indexY;
+	}
+
+}

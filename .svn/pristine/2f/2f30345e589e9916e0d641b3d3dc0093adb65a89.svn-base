@@ -1,0 +1,12 @@
+package de.proglabor.aufgabe1;
+
+public class StoneT extends IStone {
+
+	public StoneT() {
+		this.setP1(new Point2D(3, 0));
+		this.setP2(new Point2D(4, 0));
+		this.setP3(new Point2D(5, 0));
+		this.setP4(new Point2D(4, 1));
+	}
+
+}

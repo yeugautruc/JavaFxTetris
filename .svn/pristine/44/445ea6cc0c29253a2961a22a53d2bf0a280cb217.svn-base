@@ -1,0 +1,80 @@
+package de.proglabor.aufgabe4;
+
+public abstract class IStone {
+	private Point2D p1;
+	private Point2D p2;
+	private Point2D p3;
+	private Point2D p4;
+
+	public boolean hasElement(Point2D element) {
+		if (p1.equals(element) || p2.equals(element) || p3.equals(element) || p4.equals(element))
+			return true;
+		return false;
+	}
+
+	public void moveX(IStone i, int x) {
+		if (i.getP1() != null)
+			i.getP1().setX(i.getP1().getX() - x);
+		if (i.getP2() != null)
+			i.getP2().setX(i.getP1().getX() - x);
+		if (i.getP3() != null)
+			i.getP3().setX(i.getP1().getX() - x);
+		if (i.getP4() != null)
+			i.getP4().setX(i.getP1().getX() - x);
+	}
+
+	public void moveY(IStone i, int y) {
+		if (i.getP1() != null)
+			i.getP1().setY(i.getP1().getY() - y);
+		if (i.getP2() != null)
+			i.getP2().setY(i.getP1().getY() - y);
+		if (i.getP3() != null)
+			i.getP3().setY(i.getP1().getY() - y);
+		if (i.getP4() != null)
+			i.getP4().setY(i.getP1().getY() - y);
+	}
+
+	public void movingLeft() {
+		moveX(this, -1);
+	}
+
+	public void movingRight() {
+		moveX(this, 1);
+	}
+
+	public void falling() {
+		moveY(this, 1);
+	}
+
+	public void setP1(Point2D in) {
+		p1 = in;
+	}
+
+	public Point2D getP1() {
+		return p1;
+	}
+
+	public void setP2(Point2D in) {
+		p2 = in;
+	}
+
+	public Point2D getP2() {
+		return p2;
+	}
+
+	public void setP3(Point2D in) {
+		p3 = in;
+	}
+
+	public Point2D getP3() {
+		return p3;
+	}
+
+	public void setP4(Point2D in) {
+		p4 = in;
+	}
+
+	public Point2D getP4() {
+		return p4;
+	}
+}

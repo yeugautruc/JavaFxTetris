@@ -1,0 +1,8 @@
+package de.proglabor.aufgabe1;
+
+public abstract class IStone {
+
+	public boolean hasElement(Point2D element) {
+		return false;
+	};
+}

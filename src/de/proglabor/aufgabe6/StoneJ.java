@@ -1,0 +1,10 @@
+package de.proglabor.aufgabe6;
+
+public class StoneJ extends IStone {
+	
+	public StoneJ() {
+		super(new Point2D(1, 0),new Point2D(1, 1),new Point2D(1, 2),new Point2D(0, 2), 2,1);
+		this.setCenter(this.getElement(2));
+	}
+
+}

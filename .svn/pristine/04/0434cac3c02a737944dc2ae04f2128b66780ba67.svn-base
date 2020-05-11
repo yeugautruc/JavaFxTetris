@@ -1,0 +1,135 @@
+package de.proglabor.aufgabe4;
+
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+
+public class View {
+	private int mesh;
+	private int XSIZE;
+	private int YSIZE;
+	private Tetris t;
+	private Canvas canvas = new Canvas(900, 950);;
+	private GraphicsContext gameContext = canvas.getGraphicsContext2D();
+	private HighScoreList scoresList;
+
+	public GraphicsContext getGameContext() {
+		return gameContext;
+	}
+
+	// Constructor
+	public View(int mesh, int XSIZE, int YSIZE, Tetris t, Group root, HighScoreList scoresList) {
+		this.mesh = mesh;
+		this.XSIZE = XSIZE;
+		this.YSIZE = YSIZE;
+		this.t = t;
+		this.scoresList = scoresList;
+		root.getChildren().add(canvas);
+		drawGame();
+	}
+
+	//
+	public void drawGame() {
+		drawFrame(gameContext, t, scoresList);
+		drawCurrentStone(gameContext, t);
+		drawCurrentStoneInside(gameContext, t);
+		drawFalledStones(gameContext, t);
+		drawFalledStonesInside(gameContext, t);
+	}
+
+	public void drawFalledStones(GraphicsContext c, Tetris t) {
+		for (IStone stone : t.getStones()) {
+			c.setFill(Color.DARKRED);
+			for (int i = 1; i < stone.getElements().size() + 1; i++) {
+				if (stone.getElement(i).getY() >= 0 && stone.getElement(i).getY() < 20) {
+					c.fillRect(20 + stone.getElement(i).getX() * mesh, 20 + stone.getElement(i).getY() * mesh, mesh - 1,
+							mesh - 1);
+				}
+			}
+		}
+	}
+
+	public void drawFalledStonesInside(GraphicsContext c, Tetris t) {
+		for (IStone stone : t.getStones()) {
+			switchColor(c, stone);
+			for (int i = 1; i < stone.getElements().size() + 1; i++) {
+				if (stone.getElement(i).getY() >= 0 && stone.getElement(i).getY() < 20) {
+					c.fillRect((20 + stone.getElement(i).getX() * mesh) + 2,
+							(20 + stone.getElement(i).getY() * mesh) + 2, mesh - 2, mesh - 2);
+				}
+			}
+		}
+	}
+
+	public void drawCurrentStone(GraphicsContext c, Tetris t) {
+		c.setFill(Color.DARKRED);
+		for (int i = 1; i < t.getCurrentStone().getElements().size() + 1; i++) {
+			if (t.getCurrentStone().getElement(i).getY() >= 0 && t.getCurrentStone().getElement(i).getY() < 20) {
+				c.fillRect(20 + t.getCurrentStone().getElement(i).getX() * mesh,
+						20 + t.getCurrentStone().getElement(i).getY() * mesh, mesh - 1, mesh - 1);
+			}
+		}
+	}
+
+	public void drawCurrentStoneInside(GraphicsContext c, Tetris t) {
+		switchColor(c, t.getCurrentStone());
+		for (int i = 1; i < t.getCurrentStone().getElements().size() + 1; i++) {
+			if (t.getCurrentStone().getElement(i).getY() >= 0 && t.getCurrentStone().getElement(i).getY() < 20) {
+				c.fillRect(20 + t.getCurrentStone().getElement(i).getX() * mesh + 2,
+						20 + t.getCurrentStone().getElement(i).getY() * mesh + 2, mesh - 2, mesh - 2);
+			}
+		}
+	}
+
+	public void drawFrame(GraphicsContext c, Tetris t, HighScoreList scoresList) {
+		
+		String textScore = "Score: ";
+		Font newFont1 = Font.font("Arial", FontWeight.BOLD, 40);
+		c.setFont(newFont1);
+		c.clearRect(0, 0, 900, 950);
+		c.setFill(Color.DARKSLATEGRAY);
+		c.fillText(textScore + t.getScore(), 85 + 20 + mesh * XSIZE, 160);
+		String textTitel = "TETRIS";
+		String textHighScore = "High Score: ";
+		Font newFont2 = Font.font("Arial", FontWeight.BOLD, 30);
+		c.setFont(newFont2);
+		c.fillText(textTitel, 85 + 20 + mesh * XSIZE, 100);
+		c.fillText(
+				textHighScore + "\nName: " + scoresList.getHighScoreName() + "\nTime: " + scoresList.getHighScoreTime(),
+				85 + 20 + mesh * XSIZE, 240);
+		c.fillText("" + scoresList.getHighScore(), 85 + 20 + mesh * XSIZE + 180, 240);
+		c.fillRect(20, 20, mesh * XSIZE, 2);
+		c.fillRect(20, 20, 2, mesh * YSIZE);
+		c.fillRect(20, 20 + mesh * YSIZE, mesh * XSIZE, 2);
+		c.fillRect(20 + mesh * XSIZE, 20, 2, mesh * YSIZE);
+	}
+
+	public void switchColor(GraphicsContext c, IStone stone) {
+		switch (stone.getKey()) {
+		case 0:
+			c.setFill(Color.ORANGE);
+			break;
+		case 1:
+			c.setFill(Color.RED);
+			break;
+		case 2:
+			c.setFill(Color.YELLOW);
+			break;
+		case 3:
+			c.setFill(Color.BLUE);
+			break;
+		case 4:
+			c.setFill(Color.GREEN);
+			break;
+		case 5:
+			c.setFill(Color.GRAY);
+			break;
+		case 6:
+			c.setFill(Color.BROWN);
+			break;
+		}
+	}
+}

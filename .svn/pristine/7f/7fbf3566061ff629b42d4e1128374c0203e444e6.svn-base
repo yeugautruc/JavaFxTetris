@@ -1,0 +1,30 @@
+package de.proglabor.aufgabe1;
+
+public class StoneS extends IStone{
+	Point2D p1;
+	Point2D p2;
+	Point2D p3;
+	Point2D p4;
+	public StoneS() {
+		this.setP1(new Point2D(5,0));
+		this.setP2(new Point2D(4,0));
+		this.setP3(new Point2D(4,1));
+		this.setP4(new Point2D(3,1));
+	}
+	@Override
+	public boolean hasElement(Point2D element) {
+		if(this.getP1().getX() == element.getX() 
+				&& this.getP1().getY() ==element.getY())
+		return true;
+		if(this.getP2().getX() == element.getX() 
+				&& this.getP2().getY() ==element.getY())
+		return true;
+		if(this.getP3().getX() == element.getX() 
+				&& this.getP3().getY() ==element.getY())
+		return true;
+		if(this.getP4().getX() == element.getX() 
+				&& this.getP4().getY() ==element.getY())
+		return true;
+		return false;
+	}
+}

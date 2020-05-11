@@ -1,0 +1,584 @@
+package de.proglabor.aufgabe4.test;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import de.proglabor.aufgabe4.Point2D;
+import de.proglabor.aufgabe4.IStone;
+import de.proglabor.aufgabe4.StoneI;
+import de.proglabor.aufgabe4.StoneJ;
+import de.proglabor.aufgabe4.StoneL;
+import de.proglabor.aufgabe4.StoneO;
+import de.proglabor.aufgabe4.StoneS;
+import de.proglabor.aufgabe4.StoneT;
+import de.proglabor.aufgabe4.StoneZ;
+import de.proglabor.aufgabe4.Tetris;
+
+/**
+ * @author M.Gruendel
+ *
+ */
+public class TetrisAufgabe1Test {
+
+	private static int XSIZE = 10;
+	private static int YSIZE = 20;
+
+	private Tetris tetris;	
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {	
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		tetris  = new Tetris();		
+	}
+
+
+	//+++ Test - newStone() ++++++++++++++++++++++++++++++++++++++++++++++++
+
+	/**
+	 * Test StoneI - newStone()
+	 */
+	@Test (timeout = 1000)
+	public void testNewStoneI() {
+		IStone stone = tetris.newStone(0);
+		assertEquals("Stein ist kein StoneI!", 
+				StoneI.class.getName(), stone.getClass().getName());
+		evaluateElements("Ausgangsstellung ", stone, 
+				new Point2D(4, 0), new Point2D(4, 1), new Point2D(4, 2), new Point2D(4, 3));
+	}
+
+	/**
+	 * Test StoneJ - newStone()
+	 */
+	@Test (timeout = 1000)
+	public void testNewStoneJ() {
+		IStone stone = tetris.newStone(1);		
+		assertEquals("Stein ist kein StoneJ!", 
+				StoneJ.class.getName(), stone.getClass().getName());
+		evaluateElements("Ausgangsstellung ", stone, 
+				new Point2D(5, 0), new Point2D(5, 1), new Point2D(5, 2), new Point2D(4, 2));
+	}
+
+	/**
+	 * Test StoneL - newStone()
+	 */
+	@Test (timeout = 1000)
+	public void testNewStoneL() {
+		IStone stone = tetris.newStone(2);		
+		assertEquals("Stein ist kein StoneL!", 
+				StoneL.class.getName(), stone.getClass().getName());
+		evaluateElements("Ausgangsstellung ", stone, 
+				new Point2D(4, 0), new Point2D(4, 1), new Point2D(4, 2), new Point2D(5, 2));
+	}
+
+	/**
+	 * Test StoneO- newStone()
+	 */
+	@Test (timeout = 1000)
+	public void testNewStoneO() {
+		IStone stone = tetris.newStone(3);		
+		assertEquals("Stein ist kein StoneO!", 
+				StoneO.class.getName(), stone.getClass().getName());
+		evaluateElements("Ausgangsstellung ", stone, 
+				new Point2D(4, 0), new Point2D(4, 1), new Point2D(5, 0), new Point2D(5, 1));
+	}
+
+	/**
+	 * Test StoneS - newStone()
+	 */
+	@Test (timeout = 1000)
+	public void testNewStoneS() {
+		IStone stone = tetris.newStone(4);		
+		assertEquals("Stein ist kein StoneS!", 
+				StoneS.class.getName(), stone.getClass().getName());
+		evaluateElements("Ausgangsstellung ", stone, 
+				new Point2D(5, 0), new Point2D(4, 0), new Point2D(4, 1), new Point2D(3, 1));
+	}
+
+	/**
+	 * Test StoneT - newStone()
+	 */
+	@Test (timeout = 1000)
+	public void testNewStoneT() {
+		IStone stone = tetris.newStone(5);		
+		assertEquals("Stein ist kein StoneT!", 
+				StoneT.class.getName(), stone.getClass().getName());
+		evaluateElements("Ausgangsstellung ", stone, 
+				new Point2D(3, 0), new Point2D(4, 0), new Point2D(5, 0), new Point2D(4, 1));
+	}
+
+	/**
+	 * Test StoneZ - newStone()
+	 */
+	@Test (timeout = 1000)
+	public void testNewStoneZ() {
+		IStone stone = tetris.newStone(6);		
+		assertEquals("Stein ist kein StoneZ!", 
+				StoneZ.class.getName(), stone.getClass().getName());
+		evaluateElements("Ausgangsstellung ", stone, 
+				new Point2D(3, 0), new Point2D(4, 0), new Point2D(4, 1), new Point2D(5, 1));
+	}
+
+
+	//+++ Test - movingLeft() ++++++++++++++++++++++++++++++++++++++++++++++++
+
+	/**
+	 * Test StoneI - movingLeft()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingLeftStoneI() {
+		IStone stone = tetris.newStone(0);
+		tetris.movingLeft();
+		evaluateElements("Nach links schieben ", stone, 
+				new Point2D(3, 0), new Point2D(3, 1), new Point2D(3, 2), new Point2D(3, 3));
+	}
+
+	/**
+	 * Test StoneJ - movingLeft()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingLeftStoneJ() {
+		IStone stone = tetris.newStone(1);	
+		tetris.movingLeft();
+		evaluateElements("Nach links schieben ", stone, 
+				new Point2D(4, 0), new Point2D(4, 1), new Point2D(4, 2), new Point2D(3, 2));
+	}
+
+	/**
+	 * Test StoneL - movingLeft()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingLeftStoneL() {
+		IStone stone = tetris.newStone(2);	
+		tetris.movingLeft();
+		evaluateElements("Nach links schieben ", stone, 
+				new Point2D(3, 0), new Point2D(3, 1), new Point2D(3, 2), new Point2D(4, 2));
+	}
+
+	/**
+	 * Test StoneO - movingLeft()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingLeftStoneO() {
+		IStone stone = tetris.newStone(3);		
+		tetris.movingLeft();
+		evaluateElements("Nach links schieben ", stone, 
+				new Point2D(3, 0), new Point2D(3, 1), new Point2D(4, 0), new Point2D(4, 1));
+	}
+
+	/**
+	 * Test StoneS - movingLeft()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingLeftStoneS() {
+		IStone stone = tetris.newStone(4);
+		tetris.movingLeft();
+		evaluateElements("Nach links schieben ", stone, 
+				new Point2D(4, 0), new Point2D(3, 0), new Point2D(3, 1), new Point2D(2, 1));
+	}
+
+	/**
+	 * Test StoneT - movingLeft()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingLeftStoneT() {
+		IStone stone = tetris.newStone(5);	
+		tetris.movingLeft();
+		evaluateElements("Nach links schieben ", stone, 
+				new Point2D(2, 0), new Point2D(3, 0), new Point2D(4, 0), new Point2D(3, 1));
+	}
+
+	/**
+	 * Test StoneZ - movingLeft()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingLeftStoneZ() {
+		IStone stone = tetris.newStone(6);
+		tetris.movingLeft();
+		evaluateElements("Nach links schieben ", stone, 
+				new Point2D(2, 0), new Point2D(3, 0), new Point2D(3, 1), new Point2D(4, 1));
+	}
+
+
+	//+++ Test - movingRight() ++++++++++++++++++++++++++++++++++++++++++++++++
+
+	/**
+	 * Test StoneI - movingRight()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingRightStoneI() {
+		IStone stone = tetris.newStone(0);
+		tetris.movingRight();
+		evaluateElements("Nach rechts schieben ", stone, 
+				new Point2D(5, 0), new Point2D(5, 1), new Point2D(5, 2), new Point2D(5, 3));
+	}
+
+	/**
+	 * Test StoneJ - movingRight()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingRightStoneJ() {
+		IStone stone = tetris.newStone(1);	
+		tetris.movingRight();
+		evaluateElements("Nach rechts schieben ", stone, 
+				new Point2D(6, 0), new Point2D(6, 1), new Point2D(6, 2), new Point2D(5, 2));
+	}
+
+	/**
+	 * Test StoneL - movingRight()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingRightStoneL() {
+		IStone stone = tetris.newStone(2);	
+		tetris.movingRight();
+		evaluateElements("Nach rechts schieben ", stone, 
+				new Point2D(5, 0), new Point2D(5, 1), new Point2D(5, 2), new Point2D(6, 2));
+	}
+
+	/**
+	 * Test StoneO - movingRight()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingRightStoneO() {
+		IStone stone = tetris.newStone(3);		
+		tetris.movingRight();
+		evaluateElements("Nach rechts schieben ", stone, 
+				new Point2D(5, 0), new Point2D(5, 1), new Point2D(6, 0), new Point2D(6, 1));
+	}
+
+	/**
+	 * Test StoneS - movingRight()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingRightStoneS() {
+		IStone stone = tetris.newStone(4);
+		tetris.movingRight();
+		evaluateElements("Nach rechts schieben ", stone, 
+				new Point2D(6, 0), new Point2D(5, 0), new Point2D(5, 1), new Point2D(4, 1));
+	}
+
+	/**
+	 * Test StoneT - movingRight()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingRightStoneT() {
+		IStone stone = tetris.newStone(5);	
+		tetris.movingRight();
+		evaluateElements("Nach rechts schieben ", stone, 
+				new Point2D(4, 0), new Point2D(5, 0), new Point2D(6, 0), new Point2D(5, 1));
+	}
+
+	/**
+	 * Test StoneZ - movingRight()
+	 */
+	@Test (timeout = 1000)
+	public void testMovingRightStoneZ() {
+		IStone stone = tetris.newStone(6);
+		tetris.movingRight();
+		evaluateElements("Nach rechts schieben ", stone, 
+				new Point2D(4, 0), new Point2D(5, 0), new Point2D(5, 1), new Point2D(6, 1));
+	}
+
+
+	//+++ Test - movingDown() ++++++++++++++++++++++++++++++++++++++++++++++++
+
+	/**
+	 * Test StoneI - falling()
+	 */
+	@Test (timeout = 1000)
+	public void testFallingStoneI() {
+		IStone stone = tetris.newStone(0);
+		tetris.falling();
+		evaluateElements("Nach unten schieben ", stone, 
+				new Point2D(4, 1), new Point2D(4, 2), new Point2D(4, 3), new Point2D(4, 4));
+	}
+
+	/**
+	 * Test StoneJ - falling()
+	 */
+	@Test (timeout = 1000)
+	public void testFallingStoneJ() {
+		IStone stone = tetris.newStone(1);	
+		tetris.falling();
+		evaluateElements("Nach unten schieben ", stone, 
+				new Point2D(5, 1), new Point2D(5, 2), new Point2D(5, 3), new Point2D(4, 3));
+	}
+
+	/**
+	 * Test StoneL - falling()
+	 */
+	@Test (timeout = 1000)
+	public void testFallingStoneL() {
+		IStone stone = tetris.newStone(2);	
+		tetris.falling();
+		evaluateElements("Nach unten schieben ", stone, 
+				new Point2D(4, 1), new Point2D(4, 2), new Point2D(4, 3), new Point2D(5, 3));
+	}
+
+	/**
+	 * Test StoneO - falling()
+	 */
+	@Test (timeout = 1000)
+	public void testFallingStoneO() {
+		IStone stone = tetris.newStone(3);		
+		tetris.falling();
+		evaluateElements("Nach unten schieben ", stone, 
+				new Point2D(4, 1), new Point2D(4, 2), new Point2D(5, 1), new Point2D(5, 2));
+	}
+
+	/**
+	 * Test StoneS - falling()
+	 */
+	@Test (timeout = 1000)
+	public void testFallingStoneS() {
+		IStone stone = tetris.newStone(4);
+		tetris.falling();
+		evaluateElements("Nach unten schieben ", stone, 
+				new Point2D(5, 1), new Point2D(4, 1), new Point2D(4, 2), new Point2D(3, 2));
+	}
+
+	/**
+	 * Test StoneT - falling()
+	 */
+	@Test (timeout = 1000)
+	public void testFallingStoneT() {
+		IStone stone = tetris.newStone(5);	
+		tetris.falling();
+		evaluateElements("Nach unten schieben ", stone, 
+				new Point2D(3, 1), new Point2D(4, 1), new Point2D(5, 1), new Point2D(4, 2));
+	}
+
+	/**
+	 * Test StoneZ - falling()
+	 */
+	@Test (timeout = 1000)
+	public void testFallingStoneZ() {
+		IStone stone = tetris.newStone(6);
+		tetris.falling();
+		evaluateElements("Nach unten schieben ", stone, 
+				new Point2D(3, 1), new Point2D(4, 1), new Point2D(4, 2), new Point2D(5, 2));
+	}
+
+
+	//+++ Test - Borders ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	/**
+	 * Test StoneI - Borders
+	 */
+	@Test (timeout = 1000)
+	public void testBordersStoneI() {
+		IStone stone = tetris.newStone(0);
+		moveLeft(XSIZE);
+		evaluateElements("Linke Begrenzung ", stone, 
+				new Point2D(0, 0), new Point2D(0, 1), new Point2D(0, 2), new Point2D(0, 3));
+		moveRight(XSIZE);
+		evaluateElements("Rechte Begrenzung ", stone, 
+				new Point2D(9, 0), new Point2D(9, 1), new Point2D(9, 2), new Point2D(9, 3));
+	}
+
+	/**
+	 * Test StoneJ - Borders
+	 */
+	@Test (timeout = 1000)
+	public void testBordersStoneJ() {
+		IStone stone = tetris.newStone(1);	
+		moveLeft(XSIZE);
+		evaluateElements("Linke Begrenzung ", stone, 
+				new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 2), new Point2D(1, 2));
+		moveRight(XSIZE);
+		evaluateElements("Rechte Begrenzung ", stone, 
+				new Point2D(9, 0), new Point2D(9, 1), new Point2D(8, 2), new Point2D(9, 2));
+	}
+
+	/**
+	 * Test StoneL - Borders
+	 */
+	@Test (timeout = 1000)
+	public void testBordersStoneL() {
+		IStone stone = tetris.newStone(2);	
+		moveLeft(XSIZE);
+		evaluateElements("Linke Begrenzung ", stone, 
+				new Point2D(0, 0), new Point2D(0, 1), new Point2D(0, 2), new Point2D(1, 2));
+		moveRight(XSIZE);
+		evaluateElements("Rechte Begrenzung ", stone, 
+				new Point2D(8, 0), new Point2D(8, 1), new Point2D(8, 2), new Point2D(9, 2));
+	}
+
+	/**
+	 * Test StoneO - Borders
+	 */
+	@Test (timeout = 1000)
+	public void testBordersStoneO() {
+		IStone stone = tetris.newStone(3);		
+		moveLeft(XSIZE);
+		evaluateElements("Linke Begrenzung ", stone, 
+				new Point2D(0, 0), new Point2D(0, 1), new Point2D(1, 0), new Point2D(1, 1));
+		moveRight(XSIZE);
+		evaluateElements("Rechte Begrenzung ", stone, 
+				new Point2D(8, 0), new Point2D(8, 1), new Point2D(9, 0), new Point2D(9, 1));
+	}
+
+	/**
+	 * Test StoneS - Borders
+	 */
+	@Test (timeout = 1000)
+	public void testBordersStoneS() {
+		IStone stone = tetris.newStone(4);
+		moveLeft(XSIZE);
+		evaluateElements("Linke Begrenzung ", stone, 
+				new Point2D(1, 0), new Point2D(2, 0), new Point2D(0, 1), new Point2D(1, 1));
+		moveRight(XSIZE);
+		evaluateElements("Rechte Begrenzung ", stone, 
+				new Point2D(8, 0), new Point2D(9, 0), new Point2D(7, 1), new Point2D(8, 1));
+	}
+
+	/**
+	 * Test StoneT - Borders
+	 */
+	@Test (timeout = 1000)
+	public void testBordersStoneT() {
+		IStone stone = tetris.newStone(5);	
+		moveLeft(XSIZE);
+		evaluateElements("Linke Begrenzung ", stone, 
+				new Point2D(0, 0), new Point2D(1, 0), new Point2D(2, 0), new Point2D(1, 1));
+		moveRight(XSIZE);
+		evaluateElements("Rechte Begrenzung ", stone, 
+				new Point2D(7, 0), new Point2D(8, 0), new Point2D(9, 0), new Point2D(8, 1));
+	}
+
+	/**
+	 * Test StoneZ - Borders
+	 */
+	@Test (timeout = 1000)
+	public void testBordersStoneZ() {
+		IStone stone = tetris.newStone(6);
+		moveLeft(XSIZE);
+		evaluateElements("Linke Begrenzung ", stone, 
+				new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(2, 1));
+		moveRight(XSIZE);
+		evaluateElements("Rechte Begrenzung ", stone, 
+				new Point2D(7, 0), new Point2D(8, 0), new Point2D(8, 1), new Point2D(9, 1));
+	}
+
+	//----------------------------------------------------------------------
+	
+	/**
+	 * Test collision of stones falling
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testCollisionFalling() {
+		
+		tetris.newStone(0);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		IStone stoneI = tetris.newStone(0);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+		
+		evaluateElements("Kollision auf der linken Seite (aufeinander fallen)", stoneI, 
+				new Point2D(0, 15), new Point2D(0, 14), new Point2D(0, 13), new Point2D(0, 12));
+	
+	}
+	
+	
+	/**
+	 * Test collision of stones moving left
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testCollisionMovingLeft() {
+		
+		tetris.newStone(5);
+		moveLeft(XSIZE);
+		moveDown(YSIZE);
+
+		IStone stoneJ = tetris.newStone(1);
+		moveDown(YSIZE-4);
+		moveLeft(XSIZE);
+
+		evaluateElements("Kollision auf der linken Seite (nebeneinander)", stoneJ, 
+				new Point2D(3, 18), new Point2D(4, 18), new Point2D(4, 17), new Point2D(4, 16));
+	}
+	
+	/**
+	 * Test collision of stones right moving
+	 * @param msg
+	 * @param stone
+	 * @param elements
+	 */
+	@Test (timeout = 1000)
+	public void testCollisionMovingRight() {
+		
+		tetris.newStone(5);
+		moveRight(XSIZE);
+		moveDown(YSIZE);
+		
+		tetris.newStone(5);
+		moveRight(XSIZE);
+		moveDown(YSIZE);	
+
+		IStone stoneL = tetris.newStone(2);
+		moveDown(YSIZE-5);
+		moveRight(XSIZE);	
+		
+		evaluateElements("Kollision auf der rechten Seite (L einschieben)", stoneL, 
+				new Point2D(6, 15), new Point2D(6, 16), new Point2D(6, 17), new Point2D(7, 17));
+	}
+
+	
+	private void evaluateElements(String msg, IStone stone, Point2D... elements) {
+		String exp = "";
+		String got = "";
+		List<Point2D> elem = Arrays.asList(elements);
+		for (int y = 0; y < YSIZE; y++) {
+			for (int x = 0; x < XSIZE; x++) {
+				Point2D p = new Point2D(x, y);
+				if (elem.contains(p)) {
+					exp += "(" + p.getX() + ", " + p.getY() + ")";
+				}
+				if (stone.hasElement(p)) {
+					got += "(" + p.getX() + ", " + p.getY() + ")";
+				}
+			}			
+		}
+		assertEquals(msg + stone.getClass().getSimpleName() + ": ", exp, got);
+	}
+
+	private void moveLeft(int n) {
+		for (int i = 0; i < n; i++) {			
+			tetris.movingLeft();
+		}
+	}
+
+	private void moveRight(int n) {
+		for (int i = 0; i < n; i++) {			
+			tetris.movingRight();
+		}
+	}
+	
+	private void moveDown(int n) {
+		for (int i = 0; i < n; i++) {			
+			tetris.falling();
+		}
+	}
+	
+}
